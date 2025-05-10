@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Management - Closure's Online Supermarket{% endblock %}
+
+{% block content %}
+    <h1>Order Management</h1>
+
+    <div class="filters">
+        <form method="GET" action="{% url 'order_management' %}">
+            <div class="form-group">
+                <label for="status">Filter by Status:</label>
+                <select name="status" id="status" onchange="this.form.submit()">
+                    <option value="">All Orders</option>
+                    {% for status_code, status_name in status_choices %}
+                        <option value="{{ status_code }}" {% if current_status == status_code %}selected{% endif %}>
+                            {{ status_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+    
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'update_order_status' order.id %}">
+                            {% csrf_token %}
+                            <select name="status" onchange="this.form.submit()">
+                                {% for status_code, status_name in status_choices %}
+                                    <option value="{{ status_code }}" {% if order.status == status_code %}selected{% endif %}>
+                                        {{ status_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>₱{{ order.total_price }}</td>
+                    <td>
+                        <a href="{% url 'order_detail' order.id %}" class="btn">View Details</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="pagination">
+        <span class="step-links">
+            {% if orders.has_previous %}
+                <a href="?page=1{% if current_status %}&status={{ current_status }}{% endif %}">&laquo; first</a>
+                <a href="?page={{ orders.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}">previous</a>
+            {% endif %}
+            
+            <span class="current">
+                Page {{ orders.number }} of {{ orders.paginator.num_pages }}
+            </span>
+            
+            {% if orders.has_next %}
+                <a href="?page={{ orders.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}">next</a>
+                <a href="?page={{ orders.paginator.num_pages }}{% if current_status %}&status={{ current_status }}{% endif %}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}

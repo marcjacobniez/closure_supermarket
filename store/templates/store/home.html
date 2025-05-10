@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Closure's Online Supermarket{% endblock %}
+
+{% block content %}
+    <h1>Welcome to Closure's Online Supermarket</h1>
+    
+    <div class="categories-section">
+        <h2>Shop by Category</h2>
+        <div class="categories">
+            {% for category in categories %}
+                <a href="{% url 'product_list' %}?category={{ category.id }}" class="category-card">
+                    <div class="category-name">{{ category.name }}</div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="featured-section">
+        <h2>Featured Products</h2>
+        <div class="products">
+            {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="no-image">No Image</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <div class="product-price">₱{{ product.price }}</div>
+                        <a href="{% url 'product_detail' product.id %}" class="btn">View Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

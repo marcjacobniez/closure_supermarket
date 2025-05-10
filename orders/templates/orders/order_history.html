@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Order History - Closure's Online Supermarket{% endblock %}
+
+{% block content %}
+    <h1>Order History</h1>
+    
+    <div class="filters">
+        <form method="GET" action="{% url 'order_history' %}">
+            <div class="form-group">
+                <label for="search">Search Order #:</label>
+                <input type="text" name="search" id="search" value="{{ search_query }}">
+                <button type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+    
+    {% if orders %}
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                        <td>{{ order.get_status_display }}</td>
+                        <td>₱{{ order.total_price }}</td>
+                        <td>
+                            <a href="{% url 'order_detail' order.id %}" class="btn">View Details</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You haven't placed any orders yet.</p>
+        <a href="{% url 'product_list' %}" class="btn">Go Shopping</a>
+    {% endif %}
+{% endblock %}

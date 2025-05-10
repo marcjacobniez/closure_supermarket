@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventory Management - Closure's Online Supermarket{% endblock %}
+
+{% block content %}
+    <h1>Inventory Management</h1>
+    
+    <div class="admin-actions">
+        <a href="{% url 'admin:store_product_add' %}" class="btn">Add New Product</a>
+        <a href="{% url 'admin:store_category_add' %}" class="btn">Add New Category</a>
+    </div>
+    
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr{% if product.stock_quantity < 10 %} class="low-stock"{% endif %}>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category.name }}</td>
+                    <td>₱{{ product.price }}</td>
+                    <td>{{ product.stock_quantity }}</td>
+                    <td>{% if product.available %}Available{% else %}Unavailable{% endif %}</td>
+                    <td>
+                        <a href="{% url 'admin:store_product_change' product.id %}" class="btn">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="pagination">
+        <span class="step-links">
+            {% if products.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ products.previous_page_number }}">previous</a>
+            {% endif %}
+            
+            <span class="current">
+                Page {{ products.number }} of {{ products.paginator.num_pages }}
+            </span>
+            
+            {% if products.has_next %}
+                <a href="?page={{ products.next_page_number }}">next</a>
+                <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}

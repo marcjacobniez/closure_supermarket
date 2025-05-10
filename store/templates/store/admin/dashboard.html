@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Closure's Online Supermarket{% endblock %}
+
+{% block content %}
+    <h1>Admin Dashboard</h1>
+    
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>Total Products</h3>
+            <p class="stat-number">{{ total_products }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Orders</h3>
+            <p class="stat-number">{{ total_orders }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Pending Orders</h3>
+            <p class="stat-number">{{ pending_orders }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Low Stock Items</h3>
+            <p class="stat-number">{{ low_stock_products }}</p>
+        </div>
+    </div>
+    
+    <div class="admin-actions">
+        <a href="{% url 'inventory_management' %}" class="btn">Manage Inventory</a>
+        <a href="{% url 'order_management' %}" class="btn">Manage Orders</a>
+        <a href="{% url 'admin:index' %}" class="btn">Django Admin</a>
+    </div>
+    
+    <h2>Recent Orders</h2>
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in recent_orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                    <td>{{ order.get_status_display }}</td>
+                    <td>${{ order.total_price }}</td>
+                    <td>
+                        <a href="{% url 'order_detail' order.id %}" class="btn">View</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

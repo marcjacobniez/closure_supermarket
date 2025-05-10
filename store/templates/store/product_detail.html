@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Closure's Online Supermarket{% endblock %}
+
+{% block content %}
+    <div class="product-detail">
+        <div class="product-image-large">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <div class="no-image">No Image Available</div>
+            {% endif %}
+        </div>
+        
+        <div class="product-info">
+            <h1>{{ product.name }}</h1>
+            <p class="product-price">₱{{ product.price }}</p>
+            <p class="product-category">Category: {{ product.category.name }}</p>
+            
+            <div class="product-description">
+                <h2>Description</h2>
+                <p>{{ product.description }}</p>
+            </div>
+            
+            <div class="stock-info">
+                {% if product.is_in_stock %}
+                    <p class="in-stock">In Stock: {{ product.stock_quantity }} available</p>
+                {% else %}
+                    <p class="out-of-stock">Out of Stock</p>
+                {% endif %}
+            </div>
+            
+            {% if product.is_in_stock %}
+                <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
+                    </div>
+                    <button type="submit" class="btn">Add to Cart</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if recommended_products %}
+        <div class="recommended-products">
+            <h2>You Might Also Like</h2>
+            <div class="products">
+                {% for product in recommended_products %}
+                    <div class="product-card">
+                        <div class="product-image">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="no-image">No Image</div>
+                            {% endif %}
+                        </div>
+                        <div class="product-details">
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            <div class="product-price">₱{{ product.price }}</div>
+                            <a href="{% url 'product_detail' product.id %}" class="btn">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
