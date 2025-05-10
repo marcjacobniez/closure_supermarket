@@ -38,7 +38,15 @@
             <h2>Shipping Information</h2>
             <form method="POST">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
                 <button type="submit" class="btn">Place Order</button>
             </form>
         </div>

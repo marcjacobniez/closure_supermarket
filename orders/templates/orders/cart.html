@@ -24,17 +24,17 @@
                         </td>
                         <td>₱{{ item.product.price }}</td>
                         <td>
-                            <form method="POST" action="{% url 'update_cart' item.id %}">
+                            <form method="POST" action="{% url 'update_cart' item.id %}" style="display: inline;">
                                 {% csrf_token %}
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="{{ item.product.stock_quantity }}">
-                                <button type="submit">Update</button>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="{{ item.product.stock_quantity }}" style="width: 60px;">
+                                <button type="submit" class="btn btn-small">Update</button>
                             </form>
                         </td>
                         <td>₱{{ item.get_price }}</td>
                         <td>
-                            <form method="POST" action="{% url 'remove_from_cart' item.id %}">
+                            <form method="POST" action="{% url 'remove_from_cart' item.id %}" style="display: inline;">
                                 {% csrf_token %}
-                                <button type="submit">Remove</button>
+                                <button type="submit" class="btn btn-small btn-secondary">Remove</button>
                             </form>
                         </td>
                     </tr>
@@ -48,12 +48,14 @@
             </tfoot>
         </table>
         
-        <div class="cart-actions">
-            <a href="{% url 'product_list' %}" class="btn">Continue Shopping</a>
-            <a href="{% url 'checkout' %}" class="btn">Checkout</a>
+        <div class="cart-actions" style="margin-top: 1rem;">
+            <a href="{% url 'product_list' %}" class="btn btn-secondary">Continue Shopping</a>
+            <a href="{% url 'checkout' %}" class="btn">Proceed to Checkout</a>
         </div>
     {% else %}
-        <p>Your cart is empty.</p>
-        <a href="{% url 'product_list' %}" class="btn">Go Shopping</a>
+        <div class="empty-state">
+            <p>Your cart is empty.</p>
+            <a href="{% url 'product_list' %}" class="btn">Go Shopping</a>
+        </div>
     {% endif %}
 {% endblock %}

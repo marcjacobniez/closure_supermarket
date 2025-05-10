@@ -39,9 +39,9 @@
                     <td>{{ order.user.username }}</td>
                     <td>{{ order.created_at|date:"M d, Y" }}</td>
                     <td>
-                        <form method="POST" action="{% url 'update_order_status' order.id %}">
+                        <form method="POST" action="{% url 'update_order_status' order.id %}" style="display: inline;">
                             {% csrf_token %}
-                            <select name="status" onchange="this.form.submit()">
+                            <select name="status" onchange="this.form.submit()" class="status-select">
                                 {% for status_code, status_name in status_choices %}
                                     <option value="{{ status_code }}" {% if order.status == status_code %}selected{% endif %}>
                                         {{ status_name }}
@@ -52,7 +52,7 @@
                     </td>
                     <td>₱{{ order.total_price }}</td>
                     <td>
-                        <a href="{% url 'order_detail' order.id %}" class="btn">View Details</a>
+                        <a href="{% url 'order_detail' order.id %}" class="btn btn-small">View Details</a>
                     </td>
                 </tr>
             {% endfor %}
